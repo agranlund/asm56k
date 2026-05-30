@@ -34,6 +34,7 @@ Author:     M.Buras (sqward)
 #include <StringBuffer.h>
 #include <getopt.h>
 
+extern int yyparse (void);
 
 int g_currentLine = 1;
 int g_errorLine = 1;

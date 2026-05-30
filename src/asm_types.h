@@ -11,7 +11,9 @@ Author:     M.Buras (sqward)
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
+#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 202311L)
 typedef int bool;
+#endif
 typedef unsigned long long u64;
 typedef long long s64;
 typedef unsigned long u32;
