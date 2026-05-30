@@ -116,29 +116,28 @@ static void newline(void)
 }
 
 /************************************************************************/
-/* Convert next 4 ascii hex digits into a binary number			        */
+/* Convert next 4 to 6 ascii hex digits into a binary number	        */
 /************************************************************************/
 
-static unsigned int make_int(void)
+static unsigned long make_long(void)
 {
-	unsigned int val;
-	int temp;
-	int shift;
+	unsigned long val;
+	unsigned long temp;
 	int i;
 
-	shift = 12;
 	val = 0;
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < 6; i++)
 	{
 		if (*curptr >= '0' && *curptr <= '9')
 			temp = *curptr - '0';
 		else if (*curptr >= 'A' && *curptr <= 'F')
 			temp = (*curptr - 'A') + 10;
-		else
+		else if (*curptr >= 'a' && *curptr <= 'f')
 			temp = (*curptr - 'a') + 10;
+		else
+			break;
 		curptr++;
-		val += temp << shift;
-		shift -= 4;
+		val = (val << 4) | temp;
 	}
 	return val;
 }
@@ -165,7 +164,7 @@ static void put_dspword(unsigned char a, unsigned char b, unsigned char c)
 
 static long stuff_header(char memtype)
 {
-	unsigned int block_loc;
+	unsigned long block_loc;
 	/* Place holder to put size of block */
 	/* at beginning of block             */
 	/* Keep track of this until we've    */
@@ -195,10 +194,10 @@ static long stuff_header(char memtype)
 	/* Next store the block location                         */
 	/*********************************************************/
 
-	binbuff[binindex++] = 0;
-	block_loc = make_int();
-	binbuff[binindex++] = (char) (block_loc >> 8);
-	binbuff[binindex++] = (char) (block_loc);
+	block_loc = make_long();
+	binbuff[binindex++] = (unsigned char) ((block_loc >> 16) & 0xff);
+	binbuff[binindex++] = (unsigned char) ((block_loc >>  8) & 0xff);
+	binbuff[binindex++] = (unsigned char) ((block_loc >>  0) & 0xff);
 
 	/***********************************************************/
 	/* Now setup to store the block size.  Create place holder */
@@ -291,9 +290,9 @@ static int do_convert(void)
 	/*  it into the blocks header that's at the beginning of the    */
 	/*  block.                                                      */
 
-	binbuff[size_loc_index++] = 0;
-	binbuff[size_loc_index++] = (char) (size_count >> 8);
-	binbuff[size_loc_index++] = (char) (size_count);
+	binbuff[size_loc_index++] = (unsigned char) ((size_count >> 16) & 0xff);
+	binbuff[size_loc_index++] = (unsigned char) ((size_count >>  8) & 0xff);
+	binbuff[size_loc_index++] = (unsigned char) ((size_count >>  0) & 0xff);
 
 	return 1;
 }
