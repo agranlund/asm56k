@@ -5,9 +5,7 @@
 
 #define DSP_WORDSIZE 3
 
-/* from the Falcon XBIOS Sources */
-
-static uint8_t binbuff[96 * 1024];
+static uint8_t binbuff[128 * 1024 * DSP_WORDSIZE];
 static char *codebuf;
 static char *curptr;
 static char *bufend;
