@@ -107,7 +107,10 @@ static void LOD_SaveData(FILE *output_file, int chunkIndex, const char *MemType,
 	int mod_cnt;
 	unsigned char *code;
 
-	fprintf(output_file, "_DATA %s %.4X\r\n", MemType, chunks[chunkIndex].pc);
+	if (g_dsp_cpu >= 56301)
+		fprintf(output_file, "_DATA %s %.6X\r\n", MemType, chunks[chunkIndex].pc);
+	else
+		fprintf(output_file, "_DATA %s %.4X\r\n", MemType, chunks[chunkIndex].pc);
 
 	mod_cnt = 0;
 	code = chunks[chunkIndex].code_ptr + offset;
